@@ -1,3 +1,4 @@
+import allureReporter from '@wdio/allure-reporter'
 export const config: WebdriverIO.Config = {
     //
     // ====================
@@ -6,7 +7,7 @@ export const config: WebdriverIO.Config = {
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
     tsConfigPath: './tsconfig.json',
-    
+
     //
     // ==================
     // Specify Test Files
@@ -111,7 +112,7 @@ export const config: WebdriverIO.Config = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: 'cucumber',
-    
+
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
@@ -125,7 +126,32 @@ export const config: WebdriverIO.Config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    //     reporters: [
+    //   'spec',
+    //   [
+    //     'allure',
+    //     {
+    //       outputDir: 'allure-results',
+    //       disableWebdriverStepsReporting: true,
+    //       disableWebdriverScreenshotsReporting: false,
+    //     }
+    //   ]
+    // ],
+
+    reporters: [
+        'spec',
+        ['allure', { outputDir: 'allure-results' }]
+    ],
+
+    onPrepare: function () {
+        const fs = require('fs');
+        const path = require('path');
+
+        const resultsPath = path.join(process.cwd(), 'allure-results');
+        if (fs.existsSync(resultsPath)) {
+            fs.rmSync(resultsPath, { recursive: true, force: true });
+        }
+    },
 
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
@@ -269,6 +295,9 @@ export const config: WebdriverIO.Config = {
      */
     // afterScenario: function (world, result, context) {
     // },
+    afterScenario: async () => {
+        await browser.reloadSession();   // 🔥 fresh browser for every example
+    },
     /**
      *
      * Runs after a Cucumber Feature.
@@ -277,7 +306,7 @@ export const config: WebdriverIO.Config = {
      */
     // afterFeature: function (uri, feature) {
     // },
-    
+
     /**
      * Runs after a WebdriverIO command gets executed
      * @param {string} commandName hook command name
