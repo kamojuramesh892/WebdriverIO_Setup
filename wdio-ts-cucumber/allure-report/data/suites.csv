@@ -1,6 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","5021","Then verify the URL of zaggle","","Fri May 23 11:59:29 IST 2025","passed","Fri May 23 11:59:34 IST 2025","","The Internet Guinea Pig Website: User opens Google and Searches for Zaggle","",""
-"","7436","Given I am able to pass the Zaggle URL","","Fri May 23 11:59:19 IST 2025","passed","Fri May 23 11:59:26 IST 2025","","The Internet Guinea Pig Website: User opens Google and Searches for Zaggle","",""
-"","5004","Then I should see the Zagglehome page Logo","","Fri May 23 11:59:34 IST 2025","passed","Fri May 23 11:59:39 IST 2025","","The Internet Guinea Pig Website: User opens Google and Searches for Zaggle","",""
-"","1","hook:","","Fri May 23 11:59:39 IST 2025","failed","Fri May 23 11:59:39 IST 2025","","","",""
-"","3199","When I Will click on Enter button","","Fri May 23 11:59:26 IST 2025","passed","Fri May 23 11:59:29 IST 2025","","The Internet Guinea Pig Website: User opens Google and Searches for Zaggle","",""
