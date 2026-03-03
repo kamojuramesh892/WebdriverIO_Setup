@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "wdio": "wdio run ./wdio.conf.ts",
     "clean:allure": "rm -rf allure-results allure-report",
-  "report": "npx allure-commandline serve allure-results"
+    "report": "npx allure-commandline serve allure-results"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "webdriverio": "^9.24.0"
   },
   "dependencies": {
-    "chromedriver": "^136.0.3"
+    "chromedriver": "^136.0.3",
+    "xlsx": "^0.18.5"
   }
 }

@@ -54,7 +54,8 @@ export const config: WebdriverIO.Config = {
     //
     capabilities: [{
         browserName: 'chrome'
-    }],
+    }
+],
 
     //
     // ===================
@@ -180,6 +181,7 @@ export const config: WebdriverIO.Config = {
         timeout: 60000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
         ignoreUndefinedDefinitions: false,
+        
 
     },
 
