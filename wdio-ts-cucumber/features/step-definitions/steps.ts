@@ -1,38 +1,16 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
-import { expect, $ } from '@wdio/globals'
+// import { expect, $ } from '@wdio/globals'
 
 import LoginPage from '../../pages/login.page';
-import loginPage from '../../pages/login.page';
-//import loginPage from '../../pages/login.page';
-//import loginPage from '../../y/login.page';
+import { TestData } from '../../Data/data';
+import { ExcelUtil } from '../../utils/ExcelUtil';
 
-Given(/^I am able to pass the Zaggle URL$/, async () => {
-    await browser.url("https://www.zaggle.in/")
-    // await browser.maximizeWindow();
-    // await browser.pause(5000);
-}); 
+let generatedRefId: string;
 
-When(/^I Will click on Enter button$/, async () => {
-    await browser.keys("Enter");
-    await browser.refresh();
-    await browser.pause(3000);
-});
-
-When(/^verify the URL of zaggle$/, async () => {
-    let abc = await browser.getUrl();
-    expect(abc).toEqual("https://www.zaggle.in/");
-    console.log("Verified url")
-    await browser.pause(5000);
-});
-
-Then(/^I should see the Zagglehome page Logo$/, async () => {
-    await LoginPage.ZaggleHomePageLogo.isElementDisplayed;
-    await browser.saveScreenshot;
-    await browser.pause(5000);
-});
-
-
-
+// Given(/^I am on the zaggle login page$/, async () => {
+//     generatedRefId = ExcelUtil.createOrUpdateExcel();
+//     console.log('Using RefId in test:', generatedRefId);
+// });
 // store creation
 
 Given(/^I am on the zaggle login page$/, async () => {
@@ -41,61 +19,36 @@ Given(/^I am on the zaggle login page$/, async () => {
     await browser.maximizeWindow();
 });
 
-When(/^I Will enter Username and password and click on login$/, async () => {
-    await LoginPage.userName.setValue("newpettycashonly@pcash.com");
-    await browser.pause(2000);
-    await LoginPage.passWord.setValue("Testing@111");
-    await browser.pause(2000);
-    await LoginPage.LoginButton.click()
-    await browser.pause(2000);
-});
-
 When(/^I will click on Admin and Stores tab$/, async () => {
     await LoginPage.adminButton.scrollIntoView()
-    await  LoginPage.adminButton.click()
+    await LoginPage.adminButton.click()
     await browser.pause(3000)
     await LoginPage.storesTab.scrollIntoView()
-    await  LoginPage.storesTab.click()
+    await LoginPage.storesTab.click()
 });
 
 When(/^I will click on Add store button$/, async () => {
-    await  LoginPage.addStore.click()
-    // logout
-});
-
-When(/^I will Enter required fields and submit the store$/, async () => {
-    await LoginPage.enterStoreDetails();
-
-     await LoginPage.enterPettyCashDetails();
-
-    await LoginPage.submitButton.scrollIntoView()
-    await  LoginPage.submitButton.click()
+    await LoginPage.addStore.click()
 });
 
 When(/^I will Enter only store fields and submit the store$/, async () => {
     await LoginPage.enterStoreDetails();
-    await LoginPage.submitButton.scrollIntoView()
-    await  LoginPage.submitButton.click()
+    await LoginPage.submitButton.click()
 });
 
 Then(/^Store should be successfully created$/, async () => {
-    await browser.pause(3000)
-    await loginPage.cancelButton.click()
-    await browser.pause(2000)
     await LoginPage.threeDotsIcon.scrollIntoView()
-    await LoginPage.threeDotsIcon.click()
+    const xpath = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+    const lastIcon = await $(xpath);
+    await lastIcon.click();
     await LoginPage.deleteIcon.click()
     await LoginPage.confirmYes.click()
     await browser.pause(2000)
 });
 
-
-
-
-
 //three scenarios
 
-When(/^I Will enter Username "([^"]*)" and password "([^"]*)" and click on login$/,async (username: string, password: string) => {
+When(/^I Will enter Username "([^"]*)" and password "([^"]*)" and click on login$/, async (username: string, password: string) => {
     await LoginPage.userName.waitForDisplayed();
     await LoginPage.userName.setValue(username);
 
@@ -104,32 +57,202 @@ When(/^I Will enter Username "([^"]*)" and password "([^"]*)" and click on login
 
     await LoginPage.LoginButton.waitForClickable();
     await LoginPage.LoginButton.click();
-  }
+}
 );
 
 
-When(/^I will Enter required fields and submit the store with "([^"]*)"$/,async (configType: string) => {
+When(/^I will Enter required fields and submit the store with "([^"]*)"$/, async (configType: string) => {
 
     // Fill common store fields
     await LoginPage.enterStoreDetails();
     switch (configType) {
-      case 'PettyCashOnly':
-        await LoginPage.enterPettyCashDetails();
-        break;
-      case 'UtilitiesOnly':
-        await LoginPage.enterUtilitiesDetails();
-        break;
-      case 'PettyCashAndUtility':
-        await LoginPage.enterPettyCashDetails();
-        await LoginPage.enterUtilitiesDetails();
-        break;
-      
+        case 'PettyCashOnly':
+            await LoginPage.enterPettyCashDetails();
+            break;
+        case 'UtilitiesOnly':
+            await LoginPage.enterUtilitiesDetails();
+            break;
+        case 'PettyCashAndUtility':
+            await LoginPage.enterPettyCashDetails();
+            await LoginPage.enterUtilitiesDetails();
+            break;
+
     }
     await LoginPage.submitButton.scrollIntoView()
-    await  LoginPage.submitButton.click()
-   
-  }
+    await LoginPage.submitButton.click()
+
+}
 );
+
+//bulk upload
+
+When(/^I will click on Add Bulk store button$/, async () => {
+    await LoginPage.addBulkStoresButton.click()
+});
+
+// When(/^I will click on upload template$/, async () => {
+//     // await LoginPage.uploadInput.click()
+// });
+
+Then(/^I will sucessfully upload template for "([^"]*)"$/, async (configType: string) => {
+    switch (configType) {
+        case 'StoreOnly':
+            generatedRefId = await ExcelUtil.createOrUpdateExcel();
+            console.log('Using RefId in test:', generatedRefId);
+            TestData.messages.storeID = generatedRefId;
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let suceesmessageforStoreCreation = await LoginPage.bulkUploadSuce.getText();
+            console.log(suceesmessageforStoreCreation)
+            expect(suceesmessageforStoreCreation).toEqual("File uploaded successfully. \nDownload report here")
+            //verify created store in list
+            await LoginPage.bulkUploadModalClose.click()
+            const xpath1 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon1 = await $(xpath1);
+            await lastIcon1.isDisplayed();
+            // delete created storre
+            await LoginPage.threeDotsIcon.scrollIntoView()
+            const xpath = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon = await $(xpath);
+            await lastIcon.click();
+            await LoginPage.deleteIcon.click()
+            await LoginPage.confirmYes.click()
+            await browser.pause(2000)
+
+
+        break;
+        case 'StoreAndPettyCashOnly':
+            //store upload
+            generatedRefId = await ExcelUtil.createOrUpdateExcel();
+            console.log('Using RefId in test:', generatedRefId);
+            TestData.messages.storeID = generatedRefId;
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let suceesmessageforStore = await LoginPage.bulkUploadSuce.getText();
+            console.log(suceesmessageforStore)
+            expect(suceesmessageforStore).toEqual("File uploaded successfully. \nDownload report here")
+            //pettycash upload
+            await LoginPage.bulkUploadDropDown.click()
+            await LoginPage.pettycashInDropDown.click()
+            await browser.pause(2000)
+            generatedRefId = await ExcelUtil.createPettyCashExcel(generatedRefId);
+            console.log('Using RefId in test:', generatedRefId);
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let suceesmessageforPettycash = await LoginPage.bulkUploadSuce.getText();
+            console.log(suceesmessageforPettycash)
+            expect(suceesmessageforPettycash).toEqual("File uploaded successfully. \nDownload report here")
+            //verify created store in list
+            await LoginPage.bulkUploadModalClose.click()
+            const xpath2 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon2 = await $(xpath2);
+            await lastIcon2.isDisplayed();
+            // delete created storre
+            await LoginPage.threeDotsIcon.scrollIntoView()
+            const xpath3 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon3 = await $(xpath3);
+            await lastIcon3.click();
+            await LoginPage.deleteIcon.click()
+            await LoginPage.confirmYes.click()
+            await browser.pause(2000)
+            break;
+        case 'StoreAndUtilitiesOnly':
+            //store upload
+            generatedRefId = await ExcelUtil.createOrUpdateExcel();
+            console.log('Using RefId in test:', generatedRefId);
+            TestData.messages.storeID = generatedRefId;
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let suceesmessageofStore = await LoginPage.bulkUploadSuce.getText();
+            console.log(suceesmessageofStore)
+            expect(suceesmessageofStore).toEqual("File uploaded successfully. \nDownload report here")
+            //utilities upload
+            await LoginPage.bulkUploadDropDown.click()
+            await LoginPage.UtilitiesInDropDown.click()
+            await browser.pause(2000)
+            generatedRefId = await ExcelUtil.createUtilitiesExcel(generatedRefId);
+            console.log('Using RefId in test:', generatedRefId);
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let suceesmessageforUtilities = await LoginPage.bulkUploadSuce.getText();
+            console.log(suceesmessageforUtilities)
+            expect(suceesmessageforUtilities).toEqual("File uploaded successfully. \nDownload report here")
+            //verify created store in list
+            await LoginPage.bulkUploadModalClose.click()
+            const xpath4 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon4 = await $(xpath4);
+            await lastIcon4.isDisplayed();
+            // delete created storre
+            await LoginPage.threeDotsIcon.scrollIntoView()
+            const xpath5 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon5 = await $(xpath5);
+            await lastIcon5.click();
+            await LoginPage.deleteIcon.click()
+            await LoginPage.confirmYes.click()
+            await browser.pause(2000)
+            
+            break;
+        case 'StorePettyCashAndUtility':
+            //store upload
+            generatedRefId = await ExcelUtil.createOrUpdateExcel();
+            console.log('Using RefId in test:', generatedRefId);
+            TestData.messages.storeID = generatedRefId;
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let successMSGOfStore = await LoginPage.bulkUploadSuce.getText();
+            console.log(successMSGOfStore)
+            expect(successMSGOfStore).toEqual("File uploaded successfully. \nDownload report here")
+            //pettycash upload
+            await LoginPage.bulkUploadDropDown.click()
+            await LoginPage.pettycashInDropDown.click()
+            await browser.pause(2000)
+            generatedRefId = await ExcelUtil.createPCExcelWhenBothEnabled(generatedRefId);
+            console.log('Using RefId in test:', generatedRefId);
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let successMSGforPettycash = await LoginPage.bulkUploadSuce.getText();
+            console.log(successMSGforPettycash)
+            expect(successMSGforPettycash).toEqual("File uploaded successfully. \nDownload report here")
+            //utilities upload
+            await LoginPage.bulkUploadDropDown.click()
+            await LoginPage.UtilitiesInDropDown.click()
+            await browser.pause(2000)
+            generatedRefId = await ExcelUtil.createUtilitityExcelWhenBothEnabled(generatedRefId);
+            console.log('Using RefId in test:', generatedRefId);
+            await LoginPage.uploadExcelFile()
+            await LoginPage.bulkUploadSuce.waitForDisplayed();
+            await browser.pause(5000)
+            let successMSGOfUtilities = await LoginPage.bulkUploadSuce.getText();
+            console.log(successMSGOfUtilities)
+            expect(successMSGOfUtilities).toEqual("File uploaded successfully. \nDownload report here")
+            //verify created store in list
+            await LoginPage.bulkUploadModalClose.click()
+            const xpath6 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon6 = await $(xpath6);
+            await lastIcon6.isDisplayed();
+            // delete created storre
+            await LoginPage.threeDotsIcon.scrollIntoView()
+            const xpath7 = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
+            const lastIcon7 = await $(xpath7);
+            await lastIcon7.click();
+            await LoginPage.deleteIcon.click()
+            await LoginPage.confirmYes.click()
+            await browser.pause(2000)
+            
+            break;
+
+    }
+
+});
+
+
 
 
 
