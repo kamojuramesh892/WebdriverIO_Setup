@@ -37,12 +37,20 @@ When(/^I will Enter only store fields and submit the store$/, async () => {
 });
 
 Then(/^Store should be successfully created$/, async () => {
+    //success message validation
+    await LoginPage.successMessage.waitForDisplayed();
+    let successMessage = await LoginPage.successMessage.getText()
+    expect(successMessage).toEqual("Unit created successfully")
+    //delete created store
     await LoginPage.threeDotsIcon.scrollIntoView()
     const xpath = `(//td[text()="${TestData.messages.storeID}"]//parent::tr//td)[last()]//i`;
     const lastIcon = await $(xpath);
     await lastIcon.click();
     await LoginPage.deleteIcon.click()
     await LoginPage.confirmYes.click()
+    await LoginPage.successMessage.waitForDisplayed();
+    let deleteSuccessMessage = await LoginPage.successMessage.getText()
+    expect(deleteSuccessMessage).toEqual("Request processed successfully")
     await browser.pause(2000)
 });
 
@@ -250,6 +258,92 @@ Then(/^I will sucessfully upload template for "([^"]*)"$/, async (configType: st
 
     }
 
+});
+
+// Edit Existing Store
+
+When(/^I will search for existing store and clicks on edit button$/, async () => {
+    await LoginPage.storeSearchBox.click()
+    await LoginPage.storeSearchBox.setValue("PaymentStore")
+    await LoginPage.searchButton.click()
+
+    await LoginPage.threeDotsOfSpecificStore.click()
+    await LoginPage.editButton.click()
+});
+
+When(/^I will update the store details$/, async () => {
+    let randomText = await LoginPage.generateRandomAlphaNumeric()
+    let randomEmail = await LoginPage.generateRandomEmailID()
+    let randomNumber = await LoginPage.generateRandomNumeric(6)
+    await LoginPage.lobTextBox.clearValue()
+    await LoginPage.lobTextBox.setValue(randomText)
+
+    await LoginPage.primaryEmailIDTextBox.clearValue()
+    await LoginPage.primaryEmailIDTextBox.setValue(randomEmail)
+
+    await LoginPage.secondaryEmailIDTextBox.clearValue()
+    await LoginPage.secondaryEmailIDTextBox.setValue(randomEmail)
+
+    await LoginPage.GSTTextBox.clearValue()
+    await LoginPage.GSTTextBox.setValue(randomNumber)
+
+    await LoginPage.stateTextBox.clearValue()
+    await LoginPage.stateTextBox.setValue(randomText)
+
+    await LoginPage.cityTextBox.clearValue()
+    await LoginPage.cityTextBox.setValue(randomText)
+
+    await LoginPage.pincodeTextBox.clearValue()
+    await LoginPage.pincodeTextBox.setValue(randomNumber)
+
+    await LoginPage.address1TextBox.clearValue()
+    await LoginPage.address1TextBox.setValue(randomText)
+
+    await LoginPage.address2TextBox.clearValue()
+    await LoginPage.address2TextBox.setValue(randomText)
+
+    
+});
+
+When(/^I should be able to save Updated details successfully$/, async () => {
+    await LoginPage.subscriptions.scrollIntoView()
+    await LoginPage.submitButton.click()
+    await LoginPage.successMessage.waitForDisplayed();
+    let successMessage = await LoginPage.successMessage.getText()
+    expect(successMessage).toEqual("Unit updated successfully")
+});
+
+//create store with all fields
+
+When(/^I will Enter all store fields and submit the store$/, async () => {
+    let randomText = await LoginPage.generateRandomAlphaNumeric()
+    let randomEmail = await LoginPage.generateRandomEmailID()
+    let randomNumber = await LoginPage.generateRandomNumeric(6)
+    TestData.messages.storeID = randomText;
+    await LoginPage.storeID.setValue(randomText)
+    
+    await LoginPage.storeName.setValue(randomText)
+
+    await LoginPage.lobTextBox.setValue(randomText)
+
+    await LoginPage.primaryEmailIDTextBox.setValue(randomEmail)
+
+    await LoginPage.secondaryEmailIDTextBox.setValue(randomEmail)
+
+    await LoginPage.GSTTextBox.setValue(randomNumber)
+
+    await LoginPage.stateTextBox.setValue(randomText)
+
+    await LoginPage.cityTextBox.setValue(randomText)
+
+    await LoginPage.pincodeTextBox.setValue(randomNumber)
+
+    await LoginPage.address1TextBox.setValue(randomText)
+
+    await LoginPage.address2TextBox.setValue(randomText)
+
+    await LoginPage.subscriptions.scrollIntoView()
+    await LoginPage.submitButton.click()
 });
 
 

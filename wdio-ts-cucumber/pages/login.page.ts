@@ -50,7 +50,7 @@ class LoginPage extends BasePage {
     public get utilitiesManager() { return $('(//label[text()="Utilities Manager"]//parent::div//following-sibling::div//div[@class="ant-select-item ant-select-item-option"])[1]'); }
     public get utilitiesCustodian() { return $('(//label[text()="Utilities Custodians"]//parent::div//following-sibling::div//div[@class="ant-select-item ant-select-item-option"])[1]'); }
 
-
+    public get successMessage() { return $('//li[@class="ant-list-item ant-list-item-no-flex"]'); }
     public get threeDotsIcon() { return $('(//i[@class="anticon anticon-ellipsis cursor ant-dropdown-trigger"])[1]'); }
     public get deleteIcon() { return $('(//li[@class="ant-dropdown-menu-item"])[2]'); }
 
@@ -71,6 +71,22 @@ class LoginPage extends BasePage {
     get pettycashInDropDown() { return $('(//div[@class="ant-select-item-option-content"])[2]'); }
     get UtilitiesInDropDown() { return $('(//div[contains(text(),"Utilities")])[2]'); }
     get bulkUploadModalClose() { return $('//i[@class="anticon anticon-close-circle"]'); }
+
+    get storeSearchBox() { return $('//input[@placeholder="Search by Store ID & Name"]'); }
+    get searchButton() { return $('//input[@placeholder="Search by Store ID & Name"]//parent::span//i'); }
+    get threeDotsOfSpecificStore() { return $('//tbody//tr//td[text()="PaymentStore"]//following-sibling::td//i[@class="anticon anticon-ellipsis cursor ant-dropdown-trigger"]'); }
+    get editButton() { return $('(//li[@class="ant-dropdown-menu-item"])[1]'); }
+    get lobTextBox() { return $('//input[@id="petty-cash-add-stores_lineOfBusiness"]'); }
+    get primaryEmailIDTextBox() { return $('//input[@id="petty-cash-add-stores_primaryEmailId"]'); }
+    get secondaryEmailIDTextBox() { return $('//input[@id="petty-cash-add-stores_secondaryEmailId"]'); }
+    get GSTTextBox() { return $('//input[@id="petty-cash-add-stores_gst"]'); }
+    get stateTextBox() { return $('//input[@id="petty-cash-add-stores_state"]'); }
+    get cityTextBox() { return $('//input[@id="petty-cash-add-stores_city"]'); }
+    get pincodeTextBox() { return $('//input[@id="petty-cash-add-stores_pincode"]'); }
+    get address1TextBox() { return $('//input[@id="petty-cash-add-stores_addressLine1"]'); }
+    get address2TextBox() { return $('//input[@id="petty-cash-add-stores_addressLine2"]'); }
+
+
     /**
      * a method to encapsule automation code to interact with the page
      * e.g. to login using username and password
@@ -89,6 +105,12 @@ class LoginPage extends BasePage {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return result;
+    }
+
+    public generateRandomNumeric(length = 6): string {
+    return Array.from({ length }, () =>
+        Math.floor(Math.random() * 10)
+    ).join('');
     }
 
     public async scrollToHalfPage(): Promise<void> {
