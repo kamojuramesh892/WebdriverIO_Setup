@@ -87,6 +87,16 @@ class LoginPage extends BasePage {
     get address2TextBox() { return $('//input[@id="petty-cash-add-stores_addressLine2"]'); }
 
 
+
+
+
+
+
+    //mobile xpaths
+    get continueButton() { return $('//android.widget.TextView[@text="Continue"]'); }
+
+
+    
     /**
      * a method to encapsule automation code to interact with the page
      * e.g. to login using username and password

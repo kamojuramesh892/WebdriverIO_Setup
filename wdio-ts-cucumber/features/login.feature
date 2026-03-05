@@ -75,4 +75,13 @@ Feature: The Utilities
       | newutilitiesonly@utility.com | Testing@111 |
       | pettycashandutilities@pu.com | Testing@111 |
 
+
+
+
+  # Mobile scenario
+
+  # @1
+  # Scenario: Creation of Store with required fields only for different Clients
+  #   Given app is launched and click on continue button
+
  
