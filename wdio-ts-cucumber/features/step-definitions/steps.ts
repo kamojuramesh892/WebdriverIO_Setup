@@ -355,3 +355,23 @@ When(/^I will Enter all store fields and submit the store$/, async () => {
 
 
 
+
+
+
+
+
+
+//mobile test cases
+When(/^app is launched and click on continue button$/, async () => {
+    await LoginPage.continueButton.click()
+    await browser.pause(3000)
+});
+
+
+
+
+
+
+
+
+

@@ -14,6 +14,7 @@
   "description": "",
   "devDependencies": {
     "@wdio/allure-reporter": "^9.24.0",
+    "@wdio/appium-service": "^9.24.0",
     "@wdio/cli": "^9.14.0",
     "@wdio/cucumber-framework": "^9.24.0",
     "@wdio/globals": "^9.23.0",
@@ -21,6 +22,8 @@
     "@wdio/spec-reporter": "^9.14.0",
     "@wdio/types": "^9.24.0",
     "@wdio/visual-service": "^8.0.2",
+    "appium": "^3.2.0",
+    "appium-uiautomator2-driver": "^7.0.0",
     "webdriverio": "^9.24.0"
   },
   "dependencies": {
